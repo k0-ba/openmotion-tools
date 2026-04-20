@@ -1,5 +1,19 @@
 # openmotion-tools
 
+> ## ⚠️ NOTICE OF EXPERIMENTAL STATUS — PLEASE READ ⚠️
+>
+> **Classification:** `ZERO-SHOT · UNTESTED · VIBES-ONLY`
+> **Provenance:** emitted by a language model in one (1) pass, on a machine with no Open-Motion device attached, no scan CSVs on hand, and no humans in the loop to object.
+> **Validation status:** none. Not a single line has been executed against real hardware or real data. The constants *should* be right; the code *should* import; the plots *should* render. These are aspirations, not guarantees.
+>
+> **Mandatory acceptance criteria:** this release is pending field validation by **Viktor**, who is hereby designated the sole qualified tester. Viktor, if you are reading this: please run it, break it, and file issues.
+>
+> **Tooling requirement:** Viktor MUST conduct testing using **[Claude Code](https://claude.com/claude-code)**. Use of Windsurf, Cursor-with-a-different-model, or any other surrogate harness will void the informal warranty and hurt the author's feelings. This is a load-bearing requirement. Do not negotiate with Windsurf.
+>
+> Everyone else: wait for the first green checkmark from Viktor before trusting any number this code produces.
+
+---
+
 Analysis + visualization helpers for the **[Openwater Open-Motion](https://github.com/OpenwaterHealth/openmotion-sdk)** cerebral blood-flow monitor — a wearable, open-source, near-infrared laser speckle contrast imager.
 
 This repo is a companion to the upstream [`openmotion-sdk`](https://github.com/OpenwaterHealth/openmotion-sdk). The SDK handles device bring-up and scan capture; this repo handles everything after the CSVs hit disk:
