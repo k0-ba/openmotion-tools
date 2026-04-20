@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openmotion-tools"
+version = "0.1.0"
+description = "Analysis + visualization helpers for Openwater Open-Motion cerebral blood-flow scans"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "k0ba" }]
+keywords = ["openmotion", "openwater", "bfi", "bvi", "speckle-contrast", "cerebral-blood-flow"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scipy>=1.11",
+    "matplotlib>=3.7",
+    "plotly>=5.18",
+]
+
+[project.urls]
+"SDK (upstream)" = "https://github.com/OpenwaterHealth/openmotion-sdk"
+
+[tool.setuptools.packages.find]
+include = ["openmotion*"]

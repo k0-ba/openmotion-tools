@@ -1,0 +1,119 @@
+# openmotion-tools
+
+Analysis + visualization helpers for the **[Openwater Open-Motion](https://github.com/OpenwaterHealth/openmotion-sdk)** cerebral blood-flow monitor — a wearable, open-source, near-infrared laser speckle contrast imager.
+
+This repo is a companion to the upstream [`openmotion-sdk`](https://github.com/OpenwaterHealth/openmotion-sdk). The SDK handles device bring-up and scan capture; this repo handles everything after the CSVs hit disk:
+
+- offline **dark-frame correction** for raw histograms (reference implementation of the SDK's science pipeline)
+- the six stock matplotlib plots, plus an interactive Plotly dashboard
+- a one-page **scan quality / summary card** for handing to a clinician
+- canonical constants (`EXPECTED_HISTOGRAM_SUM`, pedestal, camera gain map, USB topology → left/right) baked in once, correctly
+
+Tested on Linux (Ubuntu 22.04 / 24.04, Fedora 40, Arch). macOS should also work for the analysis code; device capture on macOS is not supported by the SDK.
+
+---
+
+## Quick start (Linux)
+
+```bash
+git clone https://github.com/k0ba/openmotion-tools.git
+cd openmotion-tools
+./linux/install.sh
+```
+
+The installer:
+1. Installs `libusb-1.0` via your distro package manager.
+2. Drops `linux/99-openmotion.rules` into `/etc/udev/rules.d/` so you can talk to the device without `sudo` (grants user access to USB VID `0483`).
+3. Creates `.venv/` and installs this package editable (`pip install -e .`).
+
+Unplug/replug the console and **wait ~10 seconds** for enumeration. Verify:
+
+```bash
+lsusb | grep 0483    # should show the sensor modules
+```
+
+Then clone and follow the [SDK](https://github.com/OpenwaterHealth/openmotion-sdk) to run `multicam_setup.py` and `capture_data.py`. You'll end up with a scan directory containing raw-histogram CSVs and/or a `*_corrected.csv`.
+
+---
+
+## Analyzing a scan
+
+```python
+from pathlib import Path
+from openmotion import io, plot_static, summary
+
+scan = Path("~/scans/2026-04-20_demo").expanduser()
+
+# Load a corrected CSV (already dark-frame corrected by the SDK)
+df = io.load_corrected(scan / "scan_corrected.csv")
+
+# Six-panel grid of BFI (black, lw=2) + BVI (red, lw=1), mirrored to physical 4×2 layout
+plot_static.grid_bfi_bvi(df, out=scan / "grid_bfi_bvi.png")
+
+# One-page PNG + HTML summary card (per-camera mean BFI, cardiac-band PSD, L/R asymmetry)
+summary.scan_card(df, out_png=scan / "summary.png", out_html=scan / "summary.html")
+```
+
+Working from raw histograms instead? `openmotion.pipeline.dark_correct(raw_df)` replicates the SDK's online pipeline offline, so you can re-process a scan with different constants.
+
+See [`docs/`](docs/) for the full reference:
+- [`data-formats.md`](docs/data-formats.md) — CSV column shapes
+- [`science-pipeline.md`](docs/science-pipeline.md) — why each correction step exists
+- [`visualization-patterns.md`](docs/visualization-patterns.md) — plot conventions (camera grid, colors, axes)
+- [`setup-and-troubleshooting.md`](docs/setup-and-troubleshooting.md) — install / driver / enumeration issues
+
+---
+
+## Canonical constants
+
+Do not re-derive these — getting one wrong silently produces plausible-but-wrong metrics.
+
+| Constant | Value | Meaning |
+|---|---|---|
+| `EXPECTED_HISTOGRAM_SUM` | `2_457_606` | 1920 × 1280 sensor pixels + 6 firmware sentinel counts. Frames with any other sum are **dropped**. |
+| `PEDESTAL_HEIGHT` | `64.0` | Subtracted from μ₁ before contrast. |
+| `NUM_BINS` | `1024` | Bin 1023 is a sentinel — **zero it before analysis**. |
+| `noise_floor` | `10` | Zero bins below this before computing moments. |
+| `discard_count` | `9` | Warmup frames to drop. |
+| `dark_interval` | `600` | Dark frame every 15 s at 40 Hz. |
+| `FRAME_ID_MODULUS` | `256` | 8-bit firmware frame_id — **unwrap per `cam_id`** before time series. |
+| `CAMERA_GAIN_MAP` | `[16, 4, 2, 1, 1, 2, 4, 16]` | Outer cams hotter. |
+| `ADC_GAIN` | `≈ 0.0873` DN/e⁻ | Shot-noise correction of variance. |
+| Left/right | USB `port_numbers[-1] == 2` → left, `== 3` → right | Physical side from USB topology. |
+
+Camera indexing: `cam_id` in CSVs is **0–7**; camera numbers in docs/plots are **1–8** (`channel = cam − 1`).
+
+All of the above live in [`openmotion/constants.py`](openmotion/constants.py).
+
+---
+
+## Repo layout
+
+```
+openmotion/          # Python package — import openmotion
+  constants.py       # canonical constants (above)
+  io.py              # load raw-histogram and corrected CSVs
+  pipeline.py        # offline dark-frame correction (reference impl)
+  plot_static.py     # matplotlib plots (6 stock + extensions)
+  plot_interactive.py# Plotly dashboard
+  summary.py         # one-page QC / summary card
+docs/                # reference docs (science, formats, viz, setup)
+linux/               # install.sh + 99-openmotion.rules (udev)
+examples/            # smoke_test.py — run after install to sanity-check
+openwater-research.md# compiled research notes (scaffolding for this repo)
+```
+
+---
+
+## Status
+
+Alpha. The code is a port of the reference pipeline from the research notes — it matches the SDK's online numbers on the sample scans but has not been validated against a large corpus. File issues with a scan CSV attached if you see a discrepancy.
+
+## License
+
+MIT — see [`LICENSE`](LICENSE). The upstream SDK has its own license; check there before redistributing anything that includes SDK code.
+
+## See also
+
+- [OpenwaterHealth/openmotion-sdk](https://github.com/OpenwaterHealth/openmotion-sdk) — firmware, capture scripts, and the authoritative `docs/` folder (`SciencePipeline.md`, `Architecture.md`, `CameraArrangement.md`)
+- [Openwater Health](https://www.openwater.health/) — the organization behind the device

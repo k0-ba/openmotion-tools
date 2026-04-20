@@ -1,0 +1,12 @@
+# Openwater Open-Motion sensor modules (STMicro VID 0x0483).
+# Allows non-root access so you don't need sudo to run multicam_setup.py / capture_data.py.
+#
+# Install:
+#   sudo cp linux/99-openmotion.rules /etc/udev/rules.d/
+#   sudo udevadm control --reload-rules
+#   sudo udevadm trigger
+#   # unplug + replug the device, wait ~10 s for enumeration
+#
+# Verify after plug-in:
+#   lsusb | grep 0483
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", MODE="0666"
