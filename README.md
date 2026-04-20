@@ -101,18 +101,18 @@ Camera indexing: `cam_id` in CSVs is **0–7**; camera numbers in docs/plots are
 All of the above live in [`openmotion/constants.py`](openmotion/constants.py).
 
 ---
-# What's in the `openmotion` skill?
+## What's in the `openmotion` skill?
 
 **SKILL.md** — aggressive triggers (any mention of openmotion / openwater / BFI / BVI / speckle contrast / LVO, plus filename and column-pattern triggers), routing logic, plotly-vs-static decision rules, canonical constants checklist.
 
-## `references/` — 4 docs, ~1100 lines total
+### `references/` — 4 docs, ~1100 lines total
 
 - **`setup-and-troubleshooting.md`** — full setup per OS, error decision tree, data-quality symptom table
 - **`data-formats.md`** — CSV schemas for raw / corrected / telemetry with frame-ID unwrap
 - **`science-pipeline.md`** — BFI/BVI derivation, dark-frame interpolation, shot-noise correction, edge cases
 - **`visualization-patterns.md`** — physical layout rules, color conventions, 6 extension plots
 
-## `scripts/` — 6 Python modules, ~1400 lines total
+### `scripts/` — 6 Python modules, ~1400 lines total
 
 - **`constants.py`** — all canonical values (`NUM_BINS`, `PEDESTAL_HEIGHT`, `CAMERA_GAIN_MAP`, grid maps, style dict)
 - **`io.py`** — CSV loaders with frame-ID unwrap, sentinel zeroing, warmup discard built in
