@@ -123,6 +123,18 @@ All of the above live in [`openmotion/constants.py`](openmotion/constants.py).
 
 Plus **`_smoke_test.py`** — generates synthetic data and exercises every function. Useful if you ever modify the skill and want to verify it still works (`python _smoke_test.py` from the skill root).
 
+### To install
+
+Drop `openmotion.skill` into your Claude skills directory (or upload via the skills UI at claude.ai/settings/capabilities). It'll trigger automatically next time you or your friend mention Open-Motion, upload a scan CSV, or ask about BFI/BVI.
+Quick qualitative test
+
+###Realistic prompts examples:
+
+1. _"I just plugged in my Open-Motion and I'm getting NoBackendError when I run test_connection.py — help"_
+2. _"here's my scan_S001_20251217_corrected.csv — give me a plot"_ (with one of the sample CSVs)
+3. _"what does contrast_l3 mean in my corrected output?"_
+
+Alternatively, ship it and iterate when your friend actually uses it in the wild.
 ---
 
 ## Repo layout
