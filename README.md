@@ -12,6 +12,18 @@
 >
 > Everyone else: wait for the first green checkmark from Viktor before trusting any number this code produces.
 
+### Can this repo crash the device?
+
+**No.** This package is strictly offline post-processing:
+
+- **Inputs:** CSV files that the SDK already wrote to disk (`scan_*_histogram.csv`, `*_corrected.csv`).
+- **Outputs:** PNG plots, an HTML dashboard, a summary card.
+- **Device I/O:** zero. No USB, no serial, no firmware calls. `openmotion/` does not import `pyusb`, `pyserial`, or the SDK. You can grep for it: `grep -r "usb\|serial\|openmotion_sdk" openmotion/` returns nothing.
+
+The one thing that touches the OS is `linux/install.sh`, which (a) `apt`/`dnf`/`pacman`-installs `libusb-1.0` and (b) drops a udev rule that grants your user read/write on USB devices with vendor ID `0483`. That's a permissions change on `/dev/bus/usb/*`, not a firmware operation — the worst it can do is fail to grant permission, in which case you fall back to `sudo`. It cannot brick, flash, or reconfigure the console. If you're still nervous, skip the installer and just `pip install -e .`; you'll only lose the convenience of running capture scripts without `sudo`.
+
+So: worst realistic failure mode of this repo is **producing a wrong-looking plot from a right-looking scan.** Which is exactly why Viktor needs to eyeball the first run.
+
 ---
 
 
