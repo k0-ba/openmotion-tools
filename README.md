@@ -63,6 +63,22 @@ Then clone and follow the [SDK](https://github.com/OpenwaterHealth/openmotion-sd
 
 ---
 
+## No-AI live view (for the AI-skeptical)
+
+One file, stdlib only, zero dependencies, zero network. Paints a terminal
+heatmap of the 4×2 camera grid using ANSI blocks, updated once a second from
+the CSV the SDK is already writing. You can read the whole thing in 90 lines
+and convince yourself it does nothing sketchy.
+
+```bash
+python3 scripts/tui_heatmap.py path/to/scan_corrected.csv --watch
+```
+
+No `pip install` needed. No LLM in the loop. If you're worried the rest of
+this repo is too clever, run this one and ignore everything else.
+
+---
+
 ## Analyzing a scan
 
 ```python
