@@ -14,6 +14,7 @@
 
 ---
 
+
 Analysis + visualization helpers for the **[Openwater Open-Motion](https://github.com/OpenwaterHealth/openmotion-sdk)** cerebral blood-flow monitor — a wearable, open-source, near-infrared laser speckle contrast imager.
 
 This repo is a companion to the upstream [`openmotion-sdk`](https://github.com/OpenwaterHealth/openmotion-sdk). The SDK handles device bring-up and scan capture; this repo handles everything after the CSVs hit disk:
@@ -98,6 +99,29 @@ Do not re-derive these — getting one wrong silently produces plausible-but-wro
 Camera indexing: `cam_id` in CSVs is **0–7**; camera numbers in docs/plots are **1–8** (`channel = cam − 1`).
 
 All of the above live in [`openmotion/constants.py`](openmotion/constants.py).
+
+---
+# What's in the `openmotion` skill?
+
+**SKILL.md** — aggressive triggers (any mention of openmotion / openwater / BFI / BVI / speckle contrast / LVO, plus filename and column-pattern triggers), routing logic, plotly-vs-static decision rules, canonical constants checklist.
+
+## `references/` — 4 docs, ~1100 lines total
+
+- **`setup-and-troubleshooting.md`** — full setup per OS, error decision tree, data-quality symptom table
+- **`data-formats.md`** — CSV schemas for raw / corrected / telemetry with frame-ID unwrap
+- **`science-pipeline.md`** — BFI/BVI derivation, dark-frame interpolation, shot-noise correction, edge cases
+- **`visualization-patterns.md`** — physical layout rules, color conventions, 6 extension plots
+
+## `scripts/` — 6 Python modules, ~1400 lines total
+
+- **`constants.py`** — all canonical values (`NUM_BINS`, `PEDESTAL_HEIGHT`, `CAMERA_GAIN_MAP`, grid maps, style dict)
+- **`io.py`** — CSV loaders with frame-ID unwrap, sentinel zeroing, warmup discard built in
+- **`pipeline.py`** — offline reference implementation of the SDK's `SciencePipeline`
+- **`plot_static.py`** — 8 matplotlib plot functions (histograms, moments grid, BFI/BVI grid, asymmetry, cardiac PSD, telemetry)
+- **`plot_interactive.py`** — single-file Plotly dashboard builder with 4 tabs (Overview, Asymmetry, Spectral, Spatial heatmap)
+- **`summary.py`** — one-PNG scan QC report with 6 panels
+
+Plus **`_smoke_test.py`** — generates synthetic data and exercises every function. Useful if you ever modify the skill and want to verify it still works (`python _smoke_test.py` from the skill root).
 
 ---
 
