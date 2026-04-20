@@ -128,7 +128,7 @@ Plus **`_smoke_test.py`** — generates synthetic data and exercises every funct
 Drop `openmotion.skill` into your Claude skills directory (or upload via the skills UI at claude.ai/settings/capabilities). It'll trigger automatically next time you or your friend mention Open-Motion, upload a scan CSV, or ask about BFI/BVI.
 Quick qualitative test
 
-###Realistic prompts examples:
+### Realistic prompts examples:
 
 1. _"I just plugged in my Open-Motion and I'm getting NoBackendError when I run test_connection.py — help"_
 2. _"here's my scan_S001_20251217_corrected.csv — give me a plot"_ (with one of the sample CSVs)
